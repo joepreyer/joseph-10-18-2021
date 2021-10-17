@@ -12,7 +12,11 @@ type IOrder = Array<number>;
 
 export default function Home() {
   const [allBids, setAllBids] = useState<Array<IOrder>>([]);
+  const [highestBid, setHighestBid] = useState<number>(null);
+  const [totalBids, setTotalBids] = useState<number>(null);
+  const [totalAsks, setTotalAsks] = useState<number>(null);
   const [allAsks, setAllAsks] = useState<Array<IOrder>>([]);
+  const [highestAsk, setHighestAsk] = useState<number>(null);
   const socketUrl = "wss://www.cryptofacilities.com/ws/v1";
   const messageHistory = useRef([]);
 
@@ -23,7 +27,7 @@ export default function Home() {
       updatedAsks.push(ask);
       return setAllAsks(updatedAsks);
     } else {
-      for (let i = 0; i < allAsks.length - 1; i++) {
+      for (let i = 0; i < allAsks.length; i++) {
         // If we find the price, replace it or remove it
         if (allAsks[i][0] === ask[0]) {
           if (ask[1] === 0) {
@@ -41,8 +45,8 @@ export default function Home() {
         }
         // Else, if we reach a higher number add the order in above the higher value
         else if (allAsks[i][0] > ask[0]) {
-          if (i === 0 ) {
-            console.log("Adding to top")
+          if (i === 0) {
+            console.log("Adding to top");
           }
           if (ask[1] === 0) {
             return;
@@ -76,7 +80,7 @@ export default function Home() {
     } else {
       //Else add the bid
       // - For each new bid value, loop through existing array and try find the bid price (loops from high to low)
-      for (let i = 0; i < allBids.length - 1; i++) {
+      for (let i = 0; i < allBids.length; i++) {
         // If we find the price, replace it or remove it
         if (allBids[i][0] === bid[0]) {
           if (bid[1] === 0) {
@@ -135,21 +139,31 @@ export default function Home() {
         if (i === 0) {
           //if we are at the first (highest) item on bid
           updatedBids[i][2] = bid[1]; //total = bid value
+          setHighestBid(updatedBids[i][0]);
         } else {
-          updatedBids[i][2] = updatedBids[i - 1][2] + bid[1]; // else, total = bid value + prev total
+          let bidTotal = updatedBids[i - 1][2] + bid[1];
+          updatedBids[i][2] = bidTotal; // else, total = bid value + prev total
+          if (i === updatedBids.length - 1) {
+            setTotalBids(bidTotal);
+          }
         }
       }
       setAllBids(updatedBids);
     }
     if (asks) {
-      const startIndex = index || 0
+      const startIndex = index || 0;
       let updatedAsks = [...asks];
       for (let i = startIndex; i < updatedAsks.length; i++) {
         let ask = updatedAsks[i];
         if (i === 0) {
-          updatedAsks[i].push(ask[1]);
+          updatedAsks[i][2] = ask[1];
+          setHighestAsk(updatedAsks[i][0]);
         } else {
-          updatedAsks[i].push(updatedAsks[i - 1][2] + ask[1]);
+          let askTotal = updatedAsks[i - 1][2] + ask[1];
+          updatedAsks[i][2] = askTotal;
+          if (i === updatedAsks.length - 1) {
+            setTotalAsks(askTotal);
+          }
         }
       }
       setAllAsks(updatedAsks);
@@ -223,7 +237,13 @@ export default function Home() {
         Click Me to start receiving
       </button>
       <span>The WebSocket is currently {connectionStatus}</span>
-      <OrderBook bids={allBids} asks={allAsks} />
+      <OrderBook
+        bids={allBids}
+        asks={allAsks}
+        totalBids={totalBids}
+        totalAsks={totalAsks}
+        spread={highestAsk && highestBid && highestAsk-highestBid}
+      />
     </div>
   );
 }
