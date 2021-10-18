@@ -17,7 +17,8 @@ module.exports = {
       red: '#a92f2f',
       green: '#01825b',
       greenFade: '#103534',
-      redFade: '#3e1e28'
+      redFade: '#3e1e28',
+      purple: '#5739dd'
     },
   },
   variants: {
