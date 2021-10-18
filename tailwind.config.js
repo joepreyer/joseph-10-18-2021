@@ -4,21 +4,20 @@ module.exports = {
       "./pages/**/*.{js,ts,jsx,tsx}",
       "./components/**/*.{js,ts,jsx,tsx}",
     ],
-    safelist: [
-      "text-white",
-      "bg-index-top-xs",
-      "md:bg-index-top-tt",
-      "bg-index-top-tt-xs",
-      "w-1/3",
-      "w-1/4",
-      "/w-[1-9]/[1-9]/",
-    ],
   },
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {},
     colors: {
       dark: "#101317",
+      lightGrey: "#a7aab2",
+      grey: '#4e5361',
+      black: '#000000',
+      white: '#FFFFFF',
+      red: '#a92f2f',
+      green: '#01825b',
+      greenFade: '#103534',
+      redFade: '#3e1e28'
     },
   },
   variants: {

@@ -225,24 +225,20 @@ export default function Home() {
     [ReadyState.UNINSTANTIATED]: "Uninstantiated",
   }[readyState];
 
+  useEffect(() => {
+    connectionStatus === "Open" && subscribeWebsocket();
+  }, [connectionStatus]);
+
   return (
     <div>
       {/* <button onClick={handleClickChangeSocketUrl}>
         Click Me to change Socket Url
       </button> */}
-      <button
-        onClick={subscribeWebsocket}
-        disabled={readyState !== ReadyState.OPEN}
-      >
-        Click Me to start receiving
-      </button>
-      <span>The WebSocket is currently {connectionStatus}</span>
       <OrderBook
         bids={allBids}
         asks={allAsks}
         totalBids={totalBids}
         totalAsks={totalAsks}
-        spread={highestAsk && highestBid && highestAsk-highestBid}
       />
     </div>
   );
