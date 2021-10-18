@@ -13,6 +13,55 @@ export default function Home() {
   const [productId, setProductId] = useState("PI_XBTUSD")
   const socketUrl = "wss://www.cryptofacilities.com/ws/v1"
 
+  const addBid = (bid: IOrder): void => {
+    let updatedBids = [...allBids]
+    //If list empty, just add the bid
+    if (allBids.length === 0) {
+      bid[2] = bid[1]
+      updatedBids.push(bid)
+      return setAllBids(updatedBids)
+    } else {
+      for (let i = 0; i < allBids.length; i++) {
+        // If we find the price, replace it or remove it
+        if (allBids[i][0] === bid[0]) {
+          if (bid[1] === 0) {
+            //if value = 0, update all total above current bid and remove bid from list
+            updatedBids.splice(i, 1)
+            updateTotals({ bids: updatedBids, index: i })
+            return
+          }
+          //else replace
+          else {
+            updatedBids[i] = bid
+            updateTotals({ bids: updatedBids, index: i })
+            return
+          }
+        }
+        // Else, if we reach a lower number add the order in above the lower value
+        else if (allBids[i][0] < bid[0]) {
+          //if bid value === 0, break from the loop
+          if (bid[1] === 0) {
+            return
+          }
+          //else add the bid in above this price
+          else {
+            updatedBids.splice(i, 0, bid)
+            updateTotals({ bids: updatedBids, index: i })
+            return
+          }
+        }
+        //Else if we reach the end of the array, and bid value !== 0, add the bid to the end (new lowest bid)
+        else if (i === allBids.length - 1) {
+          if (bid[1] !== 0) {
+            bid[2] = allBids[allBids.length - 1][2] + bid[1]
+            updatedBids.push(bid)
+            return
+          }
+        }
+      }
+    }
+  }
+
   const addAsk = (ask: IOrder): void => {
     let updatedAsks = [...allAsks]
     if (allAsks.length === 0) {
@@ -50,56 +99,6 @@ export default function Home() {
           if (ask[1] !== 0) {
             ask[2] = allAsks[allAsks.length - 1][2] + ask[1]
             updatedAsks.push(ask)
-            return
-          }
-        }
-      }
-    }
-  }
-
-  const addBid = (bid: IOrder): void => {
-    let updatedBids = [...allBids]
-    //If allBids is empty, just add the bid
-    if (allBids.length === 0) {
-      bid[2] = bid[1]
-      updatedBids.push(bid)
-      return setAllBids(updatedBids)
-    } else {
-      for (let i = 0; i < allBids.length; i++) {
-        // If we find the price, replace it or remove it
-        if (allBids[i][0] === bid[0]) {
-          if (bid[1] === 0) {
-            //if value = 0, update all total above current bid and remove bid from list
-            updatedBids.splice(i, 1)
-            updateTotals({ bids: updatedBids, index: i })
-            return
-          }
-          //else replace
-          else {
-            updatedBids[i] = bid
-            updateTotals({ bids: updatedBids, index: i })
-            return
-          }
-        }
-        // Else, if we reach a lower number add the order in above the lower value
-        else if (allBids[i][0] < bid[0]) {
-          //if bid value === 0, break from the loop
-          if (bid[1] === 0) {
-            return
-          }
-          //else add the bid in above this price
-          else {
-            updatedBids.splice(i, 0, bid)
-            // updateTotals({ bids: updatedBids});
-            updateTotals({ bids: updatedBids, index: i })
-            return
-          }
-        }
-        //Else if we reach the end of the array, and bid value !== 0, add the bid to the end (new lowest bid)
-        else if (i === allBids.length - 1) {
-          if (bid[1] !== 0) {
-            bid[2] = allBids[allBids.length - 1][2] + bid[1]
-            updatedBids.push(bid)
             return
           }
         }
