@@ -35,8 +35,11 @@ const OrderBook = ({
         </div>
         <div className="absolute bottom-1/2 w-full">
           {asks
-            .map((ask) => (
-              <div className="grid grid-cols-3 gap-4 relative border-l border-black pl-10">
+            .map((ask, index) => (
+              <div
+                key={index}
+                className="grid grid-cols-3 gap-4 relative border-l border-black pl-10"
+              >
                 <div
                   className="bg-redFade absolute h-full left-0"
                   style={{ width: getWidth(ask[2], totalAsks) }}
@@ -49,8 +52,11 @@ const OrderBook = ({
             .reverse()}
         </div>
         <div className="absolute top-1/2 w-full">
-          {bids.map((bid) => (
-            <div className="grid grid-cols-3 gap-4 relative border-r border-black pl-10">
+          {bids.map((bid, index) => (
+            <div
+              key={index}
+              className="grid grid-cols-3 gap-4 relative border-r border-black pl-10"
+            >
               <div
                 className="bg-greenFade absolute h-full left-0"
                 style={{ width: getWidth(bid[2], totalBids) }}
@@ -79,8 +85,11 @@ const OrderBook = ({
               <span>SIZE</span>
               <span>PRICE</span>
             </div>
-            {bids.map((bid) => (
-              <div className="grid grid-cols-3 gap-4 relative border-r border-black">
+            {bids.map((bid, index) => (
+              <div
+                key={index}
+                className="grid grid-cols-3 gap-4 relative border-r border-black"
+              >
                 <div
                   className="bg-greenFade absolute h-full right-0"
                   style={{ width: getWidth(bid[2], totalBids) }}
@@ -98,8 +107,11 @@ const OrderBook = ({
               <span>SIZE</span>
               <span>TOTAL</span>
             </div>
-            {asks.map((ask) => (
-              <div className="grid grid-cols-3 gap-4 relative border-l border-black">
+            {asks.map((ask, index) => (
+              <div
+                key={index}
+                className="grid grid-cols-3 gap-4 relative border-l border-black"
+              >
                 <div
                   className="bg-redFade absolute h-full left-0"
                   style={{ width: getWidth(ask[2], totalAsks) }}
